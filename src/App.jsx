@@ -3,11 +3,12 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import GameTopupPage from "./pages/GameTopupPage";
-import ItemTopupPage from "./pages/ItemTopupPage"; // ✅ เพิ่มหน้าเติมไอเทม
-import PremiumAppsPage from "./pages/PremiumAppsPage"; // ✅ เพิ่มหน้าขายแอพพรีเมี่ยม
+import ItemTopupPage from "./pages/ItemTopupPage";
+import PremiumAppsPage from "./pages/PremiumAppsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Topup02 from "./pages/Topup02";
-import ContactPage from "./pages/ContactPage"; // ✅ นำเข้าหน้าติดต่อ
+import ContactPage from "./pages/ContactPage";
+import AdminDashboard from "./pages/AdminDashboard"; // Import Admin Dashboard
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
         <Route path="/topup02" element={<ProtectedRoute><Topup02 /></ProtectedRoute>} />
         <Route path="/item-topup" element={<ProtectedRoute><ItemTopupPage /></ProtectedRoute>} />
         <Route path="/premium-apps" element={<ProtectedRoute><PremiumAppsPage /></ProtectedRoute>} />
+        
+        {/* ✅ Admin Dashboard (Only accessible to admin users) */}
+        <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>} />
         
         {/* ✅ เส้นทางติดต่อเรา */}
         <Route path="/contact" element={<ContactPage />} />

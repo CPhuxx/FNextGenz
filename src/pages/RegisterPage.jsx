@@ -10,23 +10,19 @@ const RegisterPage = ({ onClose }) => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  // ✅ ฟังก์ชันกดสมัครสมาชิก
+  // ✅ Function to handle registration
   const handleRegister = async (e) => {
     e.preventDefault();
     setMessage("");
 
     try {
-      const response = await axios.post("/api/auth/register", {
-        username,
-        email,
-        password,
-      });
+      const response = await axios.post("http://localhost:4000/api/auth/register", { username, email, password });
 
       if (response.data.success) {
         setMessage("🎉 สมัครสมาชิกสำเร็จ! กำลังนำคุณไปสู่หน้าล็อกอิน...");
         setTimeout(() => {
           navigate("/login");
-          onClose(); // ปิดป๊อปอัปหลังสมัครสำเร็จ
+          onClose(); // Close the popup after successful registration
         }, 2000);
       } else {
         setMessage(response.data.message || "❌ การลงทะเบียนล้มเหลว!");
@@ -39,13 +35,9 @@ const RegisterPage = ({ onClose }) => {
   return (
     <div className="popup-overlay">
       <div className="popup-content animate-slideUp">
-        {/* ✅ ปุ่มปิด (X) กดได้แล้ว */}
         <button onClick={() => navigate("/home")} className="popup-close">✕</button>
-
         <h2 className="text-3xl font-extrabold mb-4 text-white">สมัครสมาชิก</h2>
-
         {message && <p className="text-green-400 text-sm mb-4">{message}</p>}
-
         <form onSubmit={handleRegister} className="space-y-4">
           <input
             type="text"
@@ -71,11 +63,8 @@ const RegisterPage = ({ onClose }) => {
             className="popup-input"
             required
           />
-
           <button type="submit" className="btn btn-order">สมัครสมาชิก</button>
         </form>
-
-        {/* ✅ ปุ่ม "หากมีบัญชีแล้ว ให้กลับไปหน้าเข้าสู่ระบบ" */}
         <p className="text-sm text-gray-400 mt-4">
           มีบัญชีแล้ว?{" "}
           <span className="text-blue-400 cursor-pointer hover:underline" onClick={() => navigate("/login")}>

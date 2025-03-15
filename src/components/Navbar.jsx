@@ -1,8 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; 
 import { 
   FaBars, FaTimes, FaUserCircle, FaCaretDown, FaHome, FaGamepad, FaTags, 
-  FaEnvelope, FaSignInAlt, FaUserPlus, FaCrown, FaWallet
+  FaEnvelope, FaSignInAlt, FaUserPlus, FaCrown, FaWallet 
 } from "react-icons/fa";
 
 const Navbar = () => {
@@ -11,7 +11,6 @@ const Navbar = () => {
   const [accountDropdown, setAccountDropdown] = useState(false);
   const [user, setUser] = useState(null);
   const [credit, setCredit] = useState(0);
-  const [logoutMessage, setLogoutMessage] = useState(false);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -22,15 +21,11 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    setLogoutMessage(true);
-    setTimeout(() => {
-      localStorage.removeItem("user");
-      setUser(null);
-      setCredit(0);
-      setLogoutMessage(false);
-      navigate("/home");
-      setMenuOpen(false); // ปิดเมนูเมื่อออกจากระบบ
-    }, 2000);
+    localStorage.removeItem("user");
+    setUser(null);
+    setCredit(0);
+    navigate("/home");
+    setMenuOpen(false); // ปิดเมนูเมื่อออกจากระบบ
   };
 
   const menuItems = [
@@ -39,7 +34,7 @@ const Navbar = () => {
     { name: "แอพพรีเมี่ยม", path: "/premium-apps", icon: <FaCrown /> },
     { name: "เติมเงิน", path: "/topup02", icon: <FaTags /> },
     { name: "โปรโมชั่น", path: "/promotions", icon: <FaEnvelope /> },
-    { name: "ติดต่อเรา", path: "/contact", icon: <FaEnvelope /> },  {/* ปรับปุ่มติดต่อเรา */}
+    { name: "ติดต่อเรา", path: "/contact", icon: <FaEnvelope /> },
   ];
 
   return (
@@ -72,6 +67,16 @@ const Navbar = () => {
               <FaWallet className="text-yellow-400" />
               <span>เครดิต: {credit} บาท</span>
             </div>
+          )}
+
+          {/* ✅ ปุ่ม "จัดการร้านค้า" สำหรับ admin เท่านั้น */}
+          {user && user.role === "admin" && (
+            <button 
+              onClick={() => navigate("/admin/dashboard")}
+              className="flex items-center gap-2 text-white hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer px-4 py-2 rounded-lg"
+            >
+              <FaCrown /> จัดการร้านค้า
+            </button>
           )}
 
           {/* ✅ บัญชีของฉัน */}
@@ -143,6 +148,13 @@ const Navbar = () => {
           <p className="text-white text-sm mt-4 flex items-center gap-2">
             <FaWallet className="text-yellow-400" /> เครดิต: {credit} บาท
           </p>
+        )}
+
+        {/* ✅ สำหรับ Admin เท่านั้น */}
+        {user && user.role === "admin" && (
+          <button onClick={() => { navigate("/admin/dashboard"); setMenuOpen(false); }} className="text-white w-full text-left py-3 flex items-center gap-2">
+            <FaCrown /> จัดการร้านค้า
+          </button>
         )}
 
         {/* ✅ บัญชีของฉันใน Mobile */}
