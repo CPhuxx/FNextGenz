@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import banner2 from "../assets/img/banner2.jpg";
 
 const Banner = ({ backgroundImage }) => {
   const text = "NextGenz เติมเกม ปลอดภัย 24 ชม.";
@@ -34,23 +33,20 @@ const Banner = ({ backgroundImage }) => {
     <div
       className="relative w-full h-[400px] sm:h-[500px] md:h-[550px] flex justify-center items-center text-center px-6 sm:px-8"
       style={{
-        backgroundImage: `url(${backgroundImage || banner2})`,
+        backgroundImage: `url(${backgroundImage})`,  // ใช้ backgroundImage จาก props
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Background Overlay */}
       <div className="absolute inset-0 bg-black/50"></div>
 
-      {/* Content */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: "easeOut" }}
         className="relative z-10 text-white max-w-[1000px] mx-auto"
       >
-        {/* Floating Heading Animation */}
         <motion.h1
           className="text-3xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-lg"
           animate={{ y: [-5, 5, -5] }} 
@@ -66,7 +62,6 @@ const Banner = ({ backgroundImage }) => {
           </motion.span>
         </motion.h1>
 
-        {/* Moving Subtitle */}
         <motion.p
           className="mt-4 text-sm sm:text-lg md:text-xl font-light opacity-90"
           animate={{ x: [-10, 10, -10] }}

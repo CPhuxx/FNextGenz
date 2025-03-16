@@ -349,3 +349,483 @@ footer {
     color: #60a5fa;
   }
   /* GameTopupPage */
+
+  /* banner */
+  /* General Styles */
+body {
+  background-color: #f8f8f8;
+  font-family: 'Arial', sans-serif;
+}
+
+h2 {
+  color: #4a69bb;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+h3 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Admin Settings Section */
+.admin-settings {
+  background: linear-gradient(to bottom, #4a69bb, #1f2a44);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form container */
+form {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+input[type="file"] {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  background-color: #e8e8e8;
+  border: 2px solid #ccc;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+input[type="file"]:hover {
+  background-color: #d6d6d6;
+}
+
+/* Image Preview */
+.admin-upload-section img {
+  width: 100%;
+  height: 100%;
+  max-width: 1920px; /* Ensure max width */
+  max-height: 1080px; /* Ensure max height */
+  object-fit: cover; /* Keep the aspect ratio */
+  border-radius: 1rem;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+}
+
+/* Button Styles */
+.admin-button {
+  background-color: #1f2a44;
+  color: #fff;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.admin-button:hover {
+  background-color: #4a69bb;
+}
+
+/* Clear Button */
+.clear-button {
+  background-color: #e8e8e8;
+  color: #333;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.clear-button:hover {
+  background-color: #d6d6d6;
+}
+
+/* Modal Styles */
+.admin-modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.admin-modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 80%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.admin-modal-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  margin: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.admin-modal-button.confirm {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.admin-modal-button.cancel {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.admin-modal-button:hover {
+  opacity: 0.8;
+}
+
+.admin-modal-content h3 {
+  margin-bottom: 1rem;
+}
+
+.admin-modal-content p {
+  margin-bottom: 1.5rem;
+}
+
+/* Footer Styles */
+footer {
+  background-color: #1f2a44;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+footer a {
+  color: #4a69bb;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+  /* banner */
+
+
+  /* admin-Navbar */
+
+  .admin-navbar {
+    background-color: #1a202c;
+    padding: 20px 0;
+  }
+  
+  .admin-navbar .nav-links .nav-link {
+    text-decoration: none;
+    color: #e2e8f0;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .admin-navbar .nav-links .nav-link:hover {
+    color: #4299e1; /* ใช้สีที่เป็นสีหลักของเว็บไซต์ */
+  }
+  
+  .admin-navbar .logo a {
+    color: #edf2f7;
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  
+  .admin-navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  
+  /* admin-Navbar */
+
+  /* admin-management */
+
+  .admin-manage-data {
+    padding: 2rem;
+    background-color: #1a202c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .add-user-form {
+    margin-bottom: 2rem;
+  }
+  
+  .add-user-form input,
+  .add-user-form select {
+    background-color: #2d3748;
+    color: white;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    border: 1px solid #4a5568;
+  }
+  
+  .add-user-form button {
+    background-color: #3182ce;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .add-user-form button:hover {
+    background-color: #63b3ed;
+  }
+  
+  table {
+    width: 100%;
+    background-color: #2d3748;
+    color: white;
+  }
+  
+  table th,
+  table td {
+    padding: 0.75rem;
+    text-align: left;
+  }
+  
+  table th {
+    background-color: #1a202c;
+    color: white;
+  }
+  
+  table tbody tr:hover {
+    background-color: #4a5568;
+  }
+  
+  button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    color: white;
+    cursor: pointer;
+  }
+  
+  button.bg-red-500 {
+    background-color: #f56565;
+  }
+  
+  button.bg-red-500:hover {
+    background-color: #e53e3e;
+  }
+  
+  h2, h3 {
+    color: #63b3ed;  /* สีข้อความให้เด่น */
+  }
+  
+  h3 {
+    color: #edf2f7;  /* สีสำหรับหัวข้อของฟอร์ม */
+  }
+  
+  th {
+    color: #f7fafc;  /* สีข้อความในหัวตาราง */
+  }
+  
+  input, select {
+    color: #edf2f7;  /* สีข้อความใน input และ select */
+  }
+  
+  button.bg-blue-600 {
+    background-color: #4299e1; /* ปรับสีปุ่ม */
+  }
+  
+  button.bg-blue-600:hover {
+    background-color: #3182ce; /* สีเมื่อเลื่อนเมาส์ไปเหนือปุ่ม */
+  }
+  
+
+  /* admin-management */
+
+
+  /* เฉพาะหน้า AdminManageData */
+.admin-manage-data {
+  font-family: 'Arial', sans-serif;
+}
+
+.admin-manage-data__header {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #3498db;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.admin-manage-data__add-user-form {
+  background-color: #333;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.admin-manage-data__add-user-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.admin-manage-data__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-manage-data__form-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 15px;
+}
+
+.admin-manage-data__form-field {
+  width: 100%;
+}
+
+.admin-manage-data__label {
+  color: #ddd;
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.admin-manage-data__input {
+  background-color: #444;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #666;
+  width: 100%;
+}
+
+.admin-manage-data__submit-btn {
+  background-color: #3498db;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+}
+
+/* Table */
+.admin-manage-data__table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.admin-manage-data__table-header {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.admin-manage-data__user-row:hover {
+  background-color: #444;
+}
+
+.admin-manage-data__user-cell {
+  padding: 10px;
+  border: 1px solid #444;
+}
+
+.admin-manage-data__delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Modal */
+.admin-manage-data__modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.admin-manage-data__modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.3);
+  width: 40%;
+  text-align: center;
+}
+
+.admin-manage-data__modal-header {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.admin-manage-data__modal-message {
+  color: #555;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.admin-manage-data__modal-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.admin-manage-data__confirm-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.admin-manage-data__cancel-btn {
+  background-color: #7f8c8d;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.admin-manage-data__modal-background {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-manage-data__no-user {
+  font-size: 1.2rem;
+  color: #888;
+  text-align: center;
+  padding: 20px;
+}

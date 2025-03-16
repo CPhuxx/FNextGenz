@@ -11,6 +11,7 @@ const Navbar = () => {
   const [accountDropdown, setAccountDropdown] = useState(false);
   const [user, setUser] = useState(null);
   const [credit, setCredit] = useState(0);
+  const [countdown, setCountdown] = useState(0); // สำหรับการนับถอยหลังเมื่อออกจากระบบ
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -21,11 +22,23 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-    setCredit(0);
-    navigate("/home");
-    setMenuOpen(false); // ปิดเมนูเมื่อออกจากระบบ
+    let countdownValue = 3;
+    setCountdown(countdownValue);
+
+    const interval = setInterval(() => {
+      countdownValue -= 1;
+      setCountdown(countdownValue);
+
+      if (countdownValue === 0) {
+        clearInterval(interval);
+        localStorage.removeItem("user");
+        setUser(null);
+        setCredit(0);
+        navigate("/home");
+        setMenuOpen(false);
+        window.location.reload(); // รีเฟรชหน้าเว็บหลังจากออกจากระบบ
+      }
+    }, 1000);
   };
 
   const menuItems = [
@@ -69,16 +82,6 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* ✅ ปุ่ม "จัดการร้านค้า" สำหรับ admin เท่านั้น */}
-          {user && user.role === "admin" && (
-            <button 
-              onClick={() => navigate("/admin/dashboard")}
-              className="flex items-center gap-2 text-white hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer px-4 py-2 rounded-lg"
-            >
-              <FaCrown /> จัดการร้านค้า
-            </button>
-          )}
-
           {/* ✅ บัญชีของฉัน */}
           {user ? (
             <div className="relative">
@@ -94,8 +97,14 @@ const Navbar = () => {
                   <button onClick={() => navigate("/profile")} className="flex items-center gap-2 px-3 py-2 text-white hover:bg-gray-700 cursor-pointer">
                     <FaUserCircle /> โปรไฟล์
                   </button>
+                  {/* ✅ ปุ่มจัดการร้านค้าใน Dropdown */}
+                  {user.role === "admin" && (
+                    <button onClick={() => navigate("/admin/dashboard")} className="flex items-center gap-2 px-3 py-2 text-white hover:bg-gray-700 cursor-pointer">
+                      <FaCrown /> จัดการร้านค้า
+                    </button>
+                  )}
                   <button onClick={handleLogout} className="flex items-center gap-2 px-3 py-2 w-full text-white hover:bg-gray-700 cursor-pointer">
-                    <FaSignInAlt className="text-red-400" /> ออกจากระบบ
+                    <FaSignInAlt className="text-red-400" /> {countdown > 0 ? `ออกจากระบบ (${countdown})` : "ออกจากระบบ"}
                   </button>
                 </div>
               )}
@@ -164,7 +173,7 @@ const Navbar = () => {
               <FaUserCircle /> บัญชีของฉัน
             </button>
             <button onClick={handleLogout} className="text-white w-full text-left py-3 flex items-center gap-2">
-              <FaSignInAlt /> ออกจากระบบ
+              <FaSignInAlt /> {countdown > 0 ? `ออกจากระบบ (${countdown})` : "ออกจากระบบ"}
             </button>
           </>
         ) : (

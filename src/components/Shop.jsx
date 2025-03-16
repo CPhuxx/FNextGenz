@@ -46,7 +46,7 @@ const Shop = () => {
   };
 
   return (
-    <div className="container mx-auto py-8 px-3 text-center max-w-[1200px] w-full">
+    <div className="container mx-auto py-8 px-3 text-center max-w-[1200px] w-full min-h-screen">
       {/* เติมเกมยอดนิยม */}
       <h2 className="text-lg sm:text-2xl font-extrabold text-white mb-6 animate-fadeInUp">
         เติมเกมยอดนิยม

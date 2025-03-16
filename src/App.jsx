@@ -5,36 +5,46 @@ import HomePage from "./pages/HomePage";
 import GameTopupPage from "./pages/GameTopupPage";
 import ItemTopupPage from "./pages/ItemTopupPage";
 import PremiumAppsPage from "./pages/PremiumAppsPage";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute"; // To protect routes that require login or admin access
 import Topup02 from "./pages/Topup02";
 import ContactPage from "./pages/ContactPage";
-import AdminDashboard from "./pages/AdminDashboard"; // Import Admin Dashboard
+import AdminDashboard from "./pages/AdminDashboard"; // Admin Dashboard page
+import AdminSettings from "./pages/AdminSettings"; // New Page for Admin Settings
+import AdminManageData from "./pages/AdminManageData"; // New Page for Admin Manage Data
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* ✅ เส้นทางหลัก */}
+        {/* ✅ Redirect to home page if accessing the root */}
         <Route path="/" element={<Navigate to="/home" />} />
+        
+        {/* ✅ Main Routes */}
         <Route path="/home" element={<HomePage />} />
         
-        {/* ✅ เส้นทางล็อกอิน & สมัครสมาชิก */}
+        {/* ✅ Login & Register Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         
-        {/* ✅ เส้นทางที่ต้องใช้การล็อกอิน */}
+        {/* ✅ Protected Routes (requires login) */}
         <Route path="/topup" element={<ProtectedRoute><GameTopupPage /></ProtectedRoute>} />
         <Route path="/topup02" element={<ProtectedRoute><Topup02 /></ProtectedRoute>} />
         <Route path="/item-topup" element={<ProtectedRoute><ItemTopupPage /></ProtectedRoute>} />
         <Route path="/premium-apps" element={<ProtectedRoute><PremiumAppsPage /></ProtectedRoute>} />
         
-        {/* ✅ Admin Dashboard (Only accessible to admin users) */}
+        {/* ✅ Admin Routes (requires admin access) */}
         <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>} />
         
-        {/* ✅ เส้นทางติดต่อเรา */}
+        {/* ✅ Admin Settings */}
+        <Route path="/admin/settings" element={<ProtectedRoute adminOnly={true}><AdminSettings /></ProtectedRoute>} />
+        
+        {/* ✅ Admin Manage Data */}
+        <Route path="/admin/manage-data" element={<ProtectedRoute adminOnly={true}><AdminManageData /></ProtectedRoute>} />
+        
+        {/* ✅ Contact Page */}
         <Route path="/contact" element={<ContactPage />} />
         
-        {/* ✅ เส้นทางสำหรับกรณีที่ไม่มีหน้า */}
+        {/* ✅ Catch-all route (if no route matches) */}
         <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
     </Router>
