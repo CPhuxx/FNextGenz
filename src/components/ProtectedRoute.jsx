@@ -1,11 +1,11 @@
 import { Navigate } from "react-router-dom";
 
-// Protected Route for admin
+// เส้นทางที่ต้องการการล็อกอิน (Admin)
 const ProtectedRoute = ({ children, adminOnly }) => {
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // If no user logged in or adminOnly is true and user isn't admin, redirect to home
-  if (!user || (adminOnly && user.role !== "admin")) {
+  // ถ้าไม่มีผู้ใช้ล็อกอิน หรือ adminOnly เป็น true แต่ผู้ใช้ไม่ใช่ admin ให้เปลี่ยนเส้นทางไปหน้าแรก
+  if (!user && adminOnly) {
     return <Navigate to="/home" />;
   }
 
