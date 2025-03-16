@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; 
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../index.css"; // ✅ ใช้ไฟล์ CSS ใหม่
@@ -29,6 +29,36 @@ const premiumApps = [
 const PremiumAppsPage = () => {
   const navigate = useNavigate();
   const [selectedApp, setSelectedApp] = useState(null);
+  const [user, setUser] = useState(null);
+  const [credit, setCredit] = useState(0);
+
+  useEffect(() => {
+    // ดึงข้อมูลผู้ใช้จาก localStorage หรือ API
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+      setCredit(storedUser.credit || 0); // ตรวจสอบว่าเครดิตถูกตั้งค่าหรือไม่
+    }
+  }, []);
+
+  const handlePurchase = (app) => {
+    const appPrice = parseInt(app.price.split(' ')[0]); // แปลงราคาเป็นตัวเลขจากข้อมูลที่เป็น string
+
+    if (credit < appPrice) {
+      alert("ไม่สามารถทำการสั่งซื้อได้เนื่องจากเครดิตไม่พอ");
+    } else {
+      // ลดเครดิตและทำการสั่งซื้อ
+      const newCredit = credit - appPrice; 
+      setCredit(newCredit); // อัปเดตเครดิตใน state
+
+      // อัปเดตข้อมูลใน localStorage
+      localStorage.setItem('user', JSON.stringify({ ...user, credit: newCredit }));
+
+      // สั่งซื้อสำเร็จ
+      alert("ทำการสั่งซื้อสำเร็จ");
+      navigate("/order-history"); // ไปยังหน้าประวัติการสั่งซื้อ
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-black-theme text-theme">
@@ -51,7 +81,7 @@ const PremiumAppsPage = () => {
                   รายละเอียด
                 </button>
 
-                <button className="btn btn-order" onClick={() => navigate(`/order/${app.id}`)}>
+                <button className="btn btn-order" onClick={() => handlePurchase(app)}>
                   สั่งซื้อสินค้า
                 </button>
               </div>
@@ -83,7 +113,7 @@ const PremiumAppsPage = () => {
             </ul>
 
             {/* ✅ ปุ่ม "สั่งซื้อสินค้า" */}
-            <button className="btn btn-order w-full" onClick={() => navigate(`/order/${selectedApp.id}`)}>
+            <button className="btn btn-order w-full" onClick={() => handlePurchase(selectedApp)}>
               สั่งซื้อสินค้า
             </button>
           </div>

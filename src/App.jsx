@@ -5,12 +5,14 @@ import HomePage from "./pages/HomePage";
 import GameTopupPage from "./pages/GameTopupPage";
 import ItemTopupPage from "./pages/ItemTopupPage";
 import PremiumAppsPage from "./pages/PremiumAppsPage";
+import OrderHistoryPage from "./pages/OrderHistoryPage"; // เพิ่มหน้า OrderHistoryPage
 import ProtectedRoute from "./components/ProtectedRoute"; // To protect routes that require login or admin access
 import Topup02 from "./pages/Topup02";
 import ContactPage from "./pages/ContactPage";
 import AdminDashboard from "./pages/AdminDashboard"; // Admin Dashboard page
 import AdminSettings from "./pages/AdminSettings"; // New Page for Admin Settings
 import AdminManageData from "./pages/AdminManageData"; // New Page for Admin Manage Data
+import AdminAddProductPage from "./pages/AdminAddProductPage"; // Import the new Admin Add Product Page
 
 function App() {
   return (
@@ -40,6 +42,12 @@ function App() {
         
         {/* ✅ Admin Manage Data */}
         <Route path="/admin/manage-data" element={<ProtectedRoute adminOnly={true}><AdminManageData /></ProtectedRoute>} />
+        
+        {/* ✅ Admin Add Product */}
+        <Route path="/admin/add-product" element={<ProtectedRoute adminOnly={true}><AdminAddProductPage /></ProtectedRoute>} />
+
+        {/* ✅ Order History */}
+        <Route path="/order-history" element={<ProtectedRoute><OrderHistoryPage /></ProtectedRoute>} /> {/* เพิ่มเส้นทางสำหรับหน้าประวัติการสั่งซื้อ */}
         
         {/* ✅ Contact Page */}
         <Route path="/contact" element={<ContactPage />} />

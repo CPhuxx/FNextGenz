@@ -56,7 +56,7 @@ const AdminDashboard = () => {
           </button>
 
           <button
-            onClick={() => navigate("/admin/store-management")}
+            onClick={() => navigate("/admin/add-product")} // เปลี่ยนเส้นทางจาก "/admin/store-management" เป็น "/admin/add-product"
             className="admin-action-card bg-teal-600 hover:bg-teal-700 text-white p-6 rounded-lg shadow-lg transition-all transform hover:scale-105 hover:shadow-2xl hover:rotate-2"
           >
             <h3 className="text-xl font-bold mb-2">จัดการร้านค้า</h3>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; 
 import { 
   FaBars, FaTimes, FaUserCircle, FaCaretDown, FaHome, FaGamepad, FaTags, 
-  FaEnvelope, FaSignInAlt, FaUserPlus, FaCrown, FaWallet 
+  FaEnvelope, FaSignInAlt, FaUserPlus, FaCrown, FaWallet
 } from "react-icons/fa";
 
 const Navbar = () => {
@@ -97,6 +97,10 @@ const Navbar = () => {
                   <button onClick={() => navigate("/profile")} className="flex items-center gap-2 px-3 py-2 text-white hover:bg-gray-700 cursor-pointer">
                     <FaUserCircle /> โปรไฟล์
                   </button>
+                  {/* ✅ ปุ่มประวัติการสั่งซื้อ */}
+                  <button onClick={() => navigate("/order-history")} className="flex items-center gap-2 px-3 py-2 text-white hover:bg-gray-700 cursor-pointer">
+                    <FaWallet /> ประวัติการสั่งซื้อ
+                  </button>
                   {/* ✅ ปุ่มจัดการร้านค้าใน Dropdown */}
                   {user.role === "admin" && (
                     <button onClick={() => navigate("/admin/dashboard")} className="flex items-center gap-2 px-3 py-2 text-white hover:bg-gray-700 cursor-pointer">
@@ -171,6 +175,9 @@ const Navbar = () => {
           <>
             <button onClick={() => navigate("/profile")} className="text-white w-full text-left py-3 flex items-center gap-2">
               <FaUserCircle /> บัญชีของฉัน
+            </button>
+            <button onClick={() => navigate("/order-history")} className="text-white w-full text-left py-3 flex items-center gap-2">
+              <FaWallet /> ประวัติการสั่งซื้อ
             </button>
             <button onClick={handleLogout} className="text-white w-full text-left py-3 flex items-center gap-2">
               <FaSignInAlt /> {countdown > 0 ? `ออกจากระบบ (${countdown})` : "ออกจากระบบ"}
