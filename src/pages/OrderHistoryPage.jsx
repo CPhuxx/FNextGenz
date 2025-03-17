@@ -1,79 +1,81 @@
-import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const OrderHistoryPage = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { product, email, password } = location.state || {}; // ✅ รับข้อมูลสินค้า + Email/Password
-
-  const [userCredit, setUserCredit] = useState(0);
-  const [isOrderSuccess, setIsOrderSuccess] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const user = JSON.parse(localStorage.getItem("user")); // ดึงข้อมูลผู้ใช้
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUserCredit(storedUser.credit || 0);
+    if (!user) {
+      alert("กรุณาเข้าสู่ระบบก่อนดูประวัติการสั่งซื้อ");
+      return;
     }
-  }, []);
 
-  const handleCopy = (text) => {
-    navigator.clipboard.writeText(text);
-    alert("คัดลอกสำเร็จ!");
-  };
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.post("http://localhost:4000/api/order-history/history", {
+          username: user.username,
+        });
+
+        setOrders(response.data || []);
+      } catch (error) {
+        console.error("Error fetching order history:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [user]);
 
   return (
-    <div className="order-history-page p-6 bg-gray-900 min-h-screen text-white">
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       <Navbar />
+      <main className="container mx-auto py-12 px-6 flex-grow">
+        <h2 className="text-3xl font-bold text-center mb-6">ประวัติการสั่งซื้อ</h2>
 
-      <main className="container mx-auto py-16 px-4 text-center">
-        <h2 className="text-3xl font-semibold text-blue-400 mb-8">🛒 ประวัติการสั่งซื้อ</h2>
-
-        {product ? (
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg mx-auto">
-            <h3 className="text-xl font-semibold mb-4">{product.name}</h3>
-            <img
-              src={product.img || "https://via.placeholder.com/150"}
-              alt={product.name}
-              className="w-full h-40 object-cover rounded-lg mb-4 border border-gray-700"
-            />
-            <p className="text-gray-300">💰 ราคา: {product.price} บาท</p>
-            <p className="text-gray-300">📦 จำนวน: 1 รายการ</p>
-            <p className="text-gray-300 mb-4">🪙 เครดิตของคุณ: {userCredit} บาท</p>
-
-            {/* ✅ แสดง Email & Password ถ้ามี */}
-            {email && password ? (
-              <div className="bg-gray-700 p-4 rounded-lg text-left">
-                <p className="text-gray-300 mb-2">📩 <strong>บัญชีที่ได้รับ:</strong></p>
-                <div className="flex justify-between items-center bg-gray-900 p-2 rounded-md mb-2">
-                  <span className="text-gray-300">{email}</span>
-                  <button className="text-blue-400 hover:text-blue-500" onClick={() => handleCopy(email)}>📋 คัดลอก</button>
-                </div>
-
-                <p className="text-gray-300 mb-2">🔑 <strong>รหัสผ่าน:</strong></p>
-                <div className="flex justify-between items-center bg-gray-900 p-2 rounded-md">
-                  <span className="text-gray-300">{password}</span>
-                  <button className="text-blue-400 hover:text-blue-500" onClick={() => handleCopy(password)}>📋 คัดลอก</button>
-                </div>
-              </div>
-            ) : (
-              <p className="text-yellow-400 mt-4">⏳ กำลังดำเนินการส่งสินค้า...</p>
-            )}
-
-            {/* ปุ่มกลับหน้าหลัก */}
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 mt-6 rounded-md"
-              onClick={() => navigate("/premium-apps")}
-            >
-              🔙 กลับไปหน้าสินค้า
-            </button>
-          </div>
+        {loading ? (
+          <p className="text-center text-gray-400">กำลังโหลดข้อมูล...</p>
+        ) : orders.length === 0 ? (
+          <p className="text-center text-gray-400">ไม่มีประวัติการสั่งซื้อ</p>
         ) : (
-          <p className="text-red-500">❌ ไม่พบข้อมูลการสั่งซื้อ</p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse border border-gray-700">
+              <thead>
+                <tr className="bg-gray-800 text-white">
+                  <th className="p-3 border border-gray-700">#</th>
+                  <th className="p-3 border border-gray-700">สินค้า</th>
+                  <th className="p-3 border border-gray-700">ราคา</th>
+                  <th className="p-3 border border-gray-700">สถานะ</th>
+                  <th className="p-3 border border-gray-700">วันที่</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order, index) => (
+                  <tr key={order.id} className="hover:bg-gray-700">
+                    <td className="p-3 border border-gray-700">{index + 1}</td>
+                    <td className="p-3 border border-gray-700">{order.name}</td>
+                    <td className="p-3 border border-gray-700">{order.price} บาท</td>
+                    <td className="p-3 border border-gray-700">
+                      {order.status_fix === "0" ? (
+                        <span className="text-yellow-400">รอดำเนินการ</span>
+                      ) : order.status_fix === "1" ? (
+                        <span className="text-green-400">สำเร็จ</span>
+                      ) : (
+                        <span className="text-red-400">ล้มเหลว</span>
+                      )}
+                    </td>
+                    <td className="p-3 border border-gray-700">{order.time}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </main>
-
       <Footer />
     </div>
   );
