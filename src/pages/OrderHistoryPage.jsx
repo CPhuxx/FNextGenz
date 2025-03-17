@@ -1,66 +1,79 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const OrderHistoryPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { product, user } = location.state || {};  // รับข้อมูลสินค้าจากหน้า PremiumAppsPage และข้อมูลผู้ใช้จากการ login
+  const { product, email, password } = location.state || {}; // ✅ รับข้อมูลสินค้า + Email/Password
 
-  const [userCredit, setUserCredit] = useState(0); // เครดิตของผู้ใช้
-  const [isOrderSuccess, setIsOrderSuccess] = useState(false); // ตัวแปรเพื่อเช็คการสั่งซื้อสำเร็จหรือไม่
+  const [userCredit, setUserCredit] = useState(0);
+  const [isOrderSuccess, setIsOrderSuccess] = useState(false);
 
-  // ฟังก์ชันเพื่อตรวจสอบเครดิตของผู้ใช้
   useEffect(() => {
-    // สมมุติว่าเราดึงข้อมูลเครดิตจาก API หรือจาก state ของผู้ใช้
-    if (user) {
-      setUserCredit(user.credit);  // สมมุติว่า user.credit คือเครดิตของผู้ใช้ที่ได้รับ
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUserCredit(storedUser.credit || 0);
     }
-  }, [user]);
+  }, []);
 
-  const handleOrder = () => {
-    // ตรวจสอบเครดิตก่อนทำการสั่งซื้อ
-    if (userCredit >= parseInt(product.price.split(" ")[0])) {
-      setIsOrderSuccess(true);  // หากเครดิตเพียงพอให้การสั่งซื้อสำเร็จ
-      // เพิ่มการสั่งซื้อไปยังฐานข้อมูล
-      // สามารถใช้ fetch API หรือ axios เพื่อทำการบันทึกข้อมูลในฐานข้อมูล
-      // หลังจากนั้นเราจะไปที่หน้าประวัติการสั่งซื้อ
-      navigate("/order-history", { state: { product, user } });
-    } else {
-      alert("เครดิตของคุณไม่เพียงพอสำหรับการสั่งซื้อ");
-    }
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text);
+    alert("คัดลอกสำเร็จ!");
   };
 
   return (
-    <div className="order-history-page p-6 bg-gray-800 min-h-screen text-white">
+    <div className="order-history-page p-6 bg-gray-900 min-h-screen text-white">
       <Navbar />
 
-      <main className="container mx-auto py-20 px-4 text-center">
-        <h2 className="text-3xl font-semibold text-blue-400 mb-8">ประวัติการสั่งซื้อ</h2>
+      <main className="container mx-auto py-16 px-4 text-center">
+        <h2 className="text-3xl font-semibold text-blue-400 mb-8">🛒 ประวัติการสั่งซื้อ</h2>
 
         {product ? (
-          <div className="bg-gray-700 p-6 rounded-lg shadow-lg">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg mx-auto">
             <h3 className="text-xl font-semibold mb-4">{product.name}</h3>
-            <img src={product.img} alt={product.name} className="w-full h-32 object-cover rounded-lg mb-4" />
-            <p className="text-gray-300">ราคา: {product.price}</p>
-            <p className="text-gray-300 mb-4">รายละเอียด: {product.description}</p>
-            <p className="text-gray-300">จำนวน: {product.quantity} ชิ้น</p>
-            <p className="text-gray-300 mb-4">เครดิตของคุณ: {userCredit} บาท</p>
+            <img
+              src={product.img || "https://via.placeholder.com/150"}
+              alt={product.name}
+              className="w-full h-40 object-cover rounded-lg mb-4 border border-gray-700"
+            />
+            <p className="text-gray-300">💰 ราคา: {product.price} บาท</p>
+            <p className="text-gray-300">📦 จำนวน: 1 รายการ</p>
+            <p className="text-gray-300 mb-4">🪙 เครดิตของคุณ: {userCredit} บาท</p>
 
-            {/* ปุ่มสั่งซื้อสินค้า */}
-            <button 
-              className="btn btn-order mt-4"
-              onClick={handleOrder}
+            {/* ✅ แสดง Email & Password ถ้ามี */}
+            {email && password ? (
+              <div className="bg-gray-700 p-4 rounded-lg text-left">
+                <p className="text-gray-300 mb-2">📩 <strong>บัญชีที่ได้รับ:</strong></p>
+                <div className="flex justify-between items-center bg-gray-900 p-2 rounded-md mb-2">
+                  <span className="text-gray-300">{email}</span>
+                  <button className="text-blue-400 hover:text-blue-500" onClick={() => handleCopy(email)}>📋 คัดลอก</button>
+                </div>
+
+                <p className="text-gray-300 mb-2">🔑 <strong>รหัสผ่าน:</strong></p>
+                <div className="flex justify-between items-center bg-gray-900 p-2 rounded-md">
+                  <span className="text-gray-300">{password}</span>
+                  <button className="text-blue-400 hover:text-blue-500" onClick={() => handleCopy(password)}>📋 คัดลอก</button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-yellow-400 mt-4">⏳ กำลังดำเนินการส่งสินค้า...</p>
+            )}
+
+            {/* ปุ่มกลับหน้าหลัก */}
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 mt-6 rounded-md"
+              onClick={() => navigate("/premium-apps")}
             >
-              {isOrderSuccess ? "สั่งซื้อสำเร็จ" : "สั่งซื้อสินค้า"}
+              🔙 กลับไปหน้าสินค้า
             </button>
           </div>
         ) : (
-          <p className="text-white">ไม่พบข้อมูลการสั่งซื้อ</p>
+          <p className="text-red-500">❌ ไม่พบข้อมูลการสั่งซื้อ</p>
         )}
-
       </main>
+
       <Footer />
     </div>
   );
