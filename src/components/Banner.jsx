@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import bannerMain from "../assets/img/bannerMain.jpg";
 
-const Banner = ({ backgroundImage }) => {
+const Banner = ({ backgroundImage = bannerMain }) => {  // ✅ กำหนดค่าเริ่มต้นให้ backgroundImage
   const text = "NextGenz เติมเกม ปลอดภัย ";
   const [displayText, setDisplayText] = useState("");
   const [index, setIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = bannerMain(false);
 
   useEffect(() => {
     let timeout;
-
+ห
     if (!isDeleting && index < text.length) {
       timeout = setTimeout(() => {
         setDisplayText(text.substring(0, index + 1));
@@ -33,7 +34,7 @@ const Banner = ({ backgroundImage }) => {
     <div
       className="relative w-full h-[350px] sm:h-[600px] md:h-[700px] lg:h-[800px] flex justify-center items-center text-center px-6 sm:px-8"
       style={{
-        backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: `url(${backgroundImage})`,  // ✅ ใช้ backgroundImage หรือค่าเริ่มต้นจาก bannerMain
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -45,7 +46,7 @@ const Banner = ({ backgroundImage }) => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="relative z-10 text-white w-full max-w-[1200px] mx-auto" // Ensure that it matches Navbar's width
+        className="relative z-10 text-white w-full max-w-[1200px] mx-auto"
       >
         <motion.h1
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold drop-shadow-lg"

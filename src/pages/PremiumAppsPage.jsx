@@ -28,6 +28,7 @@ const PremiumAppsPage = () => {
       const response = await fetch("http://localhost:4000/api/money", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user?.id }) // ✅ ส่ง user_id ไปยัง API
       });
 
       if (!response.ok) {
@@ -46,8 +47,8 @@ const PremiumAppsPage = () => {
   };
 
   useEffect(() => {
-    fetchUserCredit();
-  }, []);
+    if (user) fetchUserCredit();
+  }, [user]);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -81,9 +82,9 @@ const PremiumAppsPage = () => {
 
   const handlePurchase = async (app) => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    const username_customer = storedUser?.username || "puridet009"; // ✅ ใช้ username_customer ตาม ByShop
+    const userId = storedUser?.id; // ✅ ใช้ user_id แทน username_customer
 
-    if (!username_customer) {
+    if (!userId) {
       alert("❌ กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อ");
       navigate("/login");
       return;
@@ -102,7 +103,7 @@ const PremiumAppsPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: app.id, // ✅ ระบุ ID ของสินค้า
-          username_customer, // ✅ ใช้ username_customer ตามที่ ByShop ต้องการ
+          user_id: userId, // ✅ ส่ง user_id ไปยัง API
         }),
       });
 
@@ -132,7 +133,7 @@ const PremiumAppsPage = () => {
       <Navbar />
       <main className="flex-grow container mx-auto py-20 px-4 text-center max-w-[1200px]">
         <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8">
-          🎬 แอพพรีเมี่ยมยอดนิยม
+          🎬 PremiumApps
         </h2>
 
         {loading ? (
