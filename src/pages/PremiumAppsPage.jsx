@@ -28,7 +28,7 @@ const PremiumAppsPage = () => {
       const response = await fetch("http://localhost:4000/api/money", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: user?.id }) // ✅ ส่ง user_id ไปยัง API
+        body: JSON.stringify({ user_id: user?.id }),
       });
 
       if (!response.ok) {
@@ -82,7 +82,7 @@ const PremiumAppsPage = () => {
 
   const handlePurchase = async (app) => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    const userId = storedUser?.id; // ✅ ใช้ user_id แทน username_customer
+    const userId = storedUser?.id;
 
     if (!userId) {
       alert("❌ กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อ");
@@ -91,7 +91,7 @@ const PremiumAppsPage = () => {
     }
 
     await fetchUserCredit();
-    if (credit < app.price) {
+    if (credit < parseFloat(app.price)) {
       alert("❌ เครดิตไม่เพียงพอ กรุณาเติมเงินก่อน");
       return;
     }
@@ -102,8 +102,8 @@ const PremiumAppsPage = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: app.id, // ✅ ระบุ ID ของสินค้า
-          user_id: userId, // ✅ ส่ง user_id ไปยัง API
+          id: app.id,
+          user_id: userId,
         }),
       });
 
@@ -133,7 +133,7 @@ const PremiumAppsPage = () => {
       <Navbar />
       <main className="flex-grow container mx-auto py-20 px-4 text-center max-w-[1200px]">
         <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8">
-          🎬 PremiumApps
+          🎬 Premium Apps
         </h2>
 
         {loading ? (
@@ -151,14 +151,22 @@ const PremiumAppsPage = () => {
                 />
                 <h3 className="text-md font-semibold text-white">{app.name}</h3>
                 <p className="text-gray-400 text-sm mb-3">{app.price} บาท</p>
-                <div className="flex flex-col gap-2">
-                  <button className="btn btn-buy" onClick={() => setSelectedApp(app)}>
+                <p className={`text-xs font-semibold ${app.stock > 0 ? "text-green-400" : "text-red-400"}`}>
+                  {app.stock > 0 ? "พร้อมจำหน่าย" : "สินค้าหมด"}
+                </p>
+                <div className="flex flex-col gap-2 mt-3">
+                  <button
+                    className="btn btn-buy"
+                    onClick={() => setSelectedApp(app)}
+                  >
                     รายละเอียด
                   </button>
                   <button
-                    className="btn btn-order"
+                    className={`btn btn-order ${
+                      app.stock > 0 ? "" : "opacity-50 cursor-not-allowed"
+                    }`}
                     onClick={() => handlePurchase(app)}
-                    disabled={buying}
+                    disabled={buying || app.stock <= 0}
                   >
                     {buying ? "⏳ กำลังซื้อ..." : "🛒 สั่งซื้อสินค้า"}
                   </button>
