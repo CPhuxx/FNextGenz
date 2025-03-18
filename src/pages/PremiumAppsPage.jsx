@@ -6,13 +6,13 @@ import "../index.css";
 
 const PremiumAppsPage = () => {
   const navigate = useNavigate();
-  const [selectedApp, setSelectedApp] = useState(null);
   const [user, setUser] = useState(null);
   const [credit, setCredit] = useState(0);
   const [premiumApps, setPremiumApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [buying, setBuying] = useState(false);
+  const [customPrices, setCustomPrices] = useState({});
 
   useEffect(() => {
     try {
@@ -24,16 +24,16 @@ const PremiumAppsPage = () => {
   }, []);
 
   const fetchUserCredit = async () => {
+    if (!user) return;
+
     try {
       const response = await fetch("http://localhost:4000/api/money", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: user?.id }),
+        body: JSON.stringify({ user_id: user.id }),
       });
 
-      if (!response.ok) {
-        throw new Error("❌ ไม่สามารถดึงเครดิตจาก ByShop ได้");
-      }
+      if (!response.ok) throw new Error("❌ ไม่สามารถดึงเครดิตจาก ByShop ได้");
 
       const data = await response.json();
       if (data.status === "success") {
@@ -58,13 +58,15 @@ const PremiumAppsPage = () => {
         headers: { "Content-Type": "application/json" },
       });
 
-      if (!response.ok) {
-        throw new Error(`เกิดข้อผิดพลาด: ${response.statusText} (${response.status})`);
-      }
+      if (!response.ok) throw new Error(`เกิดข้อผิดพลาด: ${response.statusText} (${response.status})`);
 
       const data = await response.json();
       if (data.status === "success" && Array.isArray(data.products)) {
         setPremiumApps(data.products);
+        // ตั้งค่า default price จาก API
+        const priceMap = {};
+        data.products.forEach((app) => (priceMap[app.id] = app.price));
+        setCustomPrices(priceMap);
         setError(null);
       } else {
         throw new Error("❌ ไม่พบข้อมูลสินค้า หรือ API ตอบกลับผิดโครงสร้าง");
@@ -80,18 +82,22 @@ const PremiumAppsPage = () => {
     fetchProducts();
   }, []);
 
-  const handlePurchase = async (app) => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const userId = storedUser?.id;
+  const handlePriceChange = (id, newPrice) => {
+    if (isNaN(newPrice) || newPrice < 0) return;
+    setCustomPrices((prevPrices) => ({ ...prevPrices, [id]: newPrice }));
+  };
 
-    if (!userId) {
+  const handlePurchase = async (app) => {
+    if (!user) {
       alert("❌ กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อ");
       navigate("/login");
       return;
     }
 
     await fetchUserCredit();
-    if (credit < parseFloat(app.price)) {
+    const appPrice = parseFloat(customPrices[app.id] || app.price);
+
+    if (credit < appPrice) {
       alert("❌ เครดิตไม่เพียงพอ กรุณาเติมเงินก่อน");
       return;
     }
@@ -103,13 +109,12 @@ const PremiumAppsPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: app.id,
-          user_id: userId,
+          user_id: user.id,
+          username_customer: user.username,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`เกิดข้อผิดพลาด: ${response.statusText} (${response.status})`);
-      }
+      if (!response.ok) throw new Error(`เกิดข้อผิดพลาด: ${response.statusText} (${response.status})`);
 
       const data = await response.json();
       if (data.status === "success") {
@@ -132,9 +137,7 @@ const PremiumAppsPage = () => {
     <div className="flex flex-col min-h-screen bg-black-theme text-theme">
       <Navbar />
       <main className="flex-grow container mx-auto py-20 px-4 text-center max-w-[1200px]">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8">
-          🎬 Premium Apps
-        </h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8">🎬 Premium Apps</h2>
 
         {loading ? (
           <p className="text-white text-lg">⏳ กำลังโหลดข้อมูลสินค้า...</p>
@@ -150,21 +153,28 @@ const PremiumAppsPage = () => {
                   className="w-full aspect-square rounded-lg mb-3 border border-gray-700"
                 />
                 <h3 className="text-md font-semibold text-white">{app.name}</h3>
-                <p className="text-gray-400 text-sm mb-3">{app.price} บาท</p>
+
+                {/* ✅ ปรับปรุง Input สำหรับราคาที่กำหนดเอง */}
+                <div className="flex items-center gap-2 mt-2">
+                  <input
+                    type="number"
+                    value={customPrices[app.id] || app.price}
+                    onChange={(e) => handlePriceChange(app.id, parseFloat(e.target.value))}
+                    className="w-20 p-1 rounded-md text-black"
+                    min="0"
+                  />
+                  <span className="text-gray-400 text-sm">บาท</span>
+                </div>
+
                 <p className={`text-xs font-semibold ${app.stock > 0 ? "text-green-400" : "text-red-400"}`}>
                   {app.stock > 0 ? "พร้อมจำหน่าย" : "สินค้าหมด"}
                 </p>
                 <div className="flex flex-col gap-2 mt-3">
-                  <button
-                    className="btn btn-buy"
-                    onClick={() => setSelectedApp(app)}
-                  >
+                  <button className="btn btn-buy" onClick={() => navigate(`/product/${app.id}`)}>
                     รายละเอียด
                   </button>
                   <button
-                    className={`btn btn-order ${
-                      app.stock > 0 ? "" : "opacity-50 cursor-not-allowed"
-                    }`}
+                    className={`btn btn-order ${app.stock > 0 ? "" : "opacity-50 cursor-not-allowed"}`}
                     onClick={() => handlePurchase(app)}
                     disabled={buying || app.stock <= 0}
                   >

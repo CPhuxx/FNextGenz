@@ -2,15 +2,15 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import bannerMain from "../assets/img/bannerMain.jpg";
 
-const Banner = ({ backgroundImage = bannerMain }) => {  // ✅ กำหนดค่าเริ่มต้นให้ backgroundImage
+const Banner = ({ backgroundImage }) => {
   const text = "NextGenz เติมเกม ปลอดภัย ";
   const [displayText, setDisplayText] = useState("");
   const [index, setIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = bannerMain(false);
+  const [isDeleting, setIsDeleting] = useState(false); // ✅ แก้จาก bannerMain(false) เป็น useState(false)
 
   useEffect(() => {
     let timeout;
-ห
+
     if (!isDeleting && index < text.length) {
       timeout = setTimeout(() => {
         setDisplayText(text.substring(0, index + 1));
@@ -34,7 +34,7 @@ const Banner = ({ backgroundImage = bannerMain }) => {  // ✅ กำหนด�
     <div
       className="relative w-full h-[350px] sm:h-[600px] md:h-[700px] lg:h-[800px] flex justify-center items-center text-center px-6 sm:px-8"
       style={{
-        backgroundImage: `url(${backgroundImage})`,  // ✅ ใช้ backgroundImage หรือค่าเริ่มต้นจาก bannerMain
+        backgroundImage: `url(${backgroundImage || bannerMain})`, // ✅ ป้องกันค่า undefined
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

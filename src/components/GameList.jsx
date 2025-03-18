@@ -1,92 +1,81 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { motion } from "framer-motion";
-
-// Import รูปเกมทั้งหมด
-import FreeFire from "../assets/img/freefire.png";
-import Genshin from "../assets/img/genshin.png";
-import Honkai from "../assets/img/honkai.png";
-import Valorant from "../assets/img/Valorant.png";
-import Apex from "../assets/img/apex.png";
-import Ragnarok from "../assets/img/ragnarok.png";
-import PUBG from "../assets/img/pubg.png";
-import Identity from "../assets/img/identity.png";
-import League from "../assets/img/lol.png";
 
 const GameList = () => {
   const navigate = useNavigate();
-  const [hoveredGame, setHoveredGame] = useState(null);
+  const [gameProduct, setGameProduct] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const games = [
-    { id: "undawn", name: "Garena Undawn", img: FreeFire },
-    { id: "valorant", name: "Valorant", img: Valorant },
-    { id: "apex", name: "Apex Legends", img: Apex },
-    { id: "freefire", name: "Free Fire", img: FreeFire },
-    { id: "honkai", name: "Honkai: Star Rail", img: Honkai },
-    { id: "genshin", name: "Genshin Impact", img: Genshin },
-    { id: "identity", name: "Identity V", img: Identity },
-    { id: "pubg", name: "PUBG Mobile", img: PUBG },
-    { id: "lol", name: "League of Legends", img: League },
-    { id: "ragnarok", name: "Ragnarok Origin", img: Ragnarok },
-  ];
+  // Fetch game product data from the API
+  const fetchGameProduct = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:4000/api/game-products", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
 
-  const handleGameClick = (game) => {
-    navigate("/item-topup", { state: { item: game } });
+      if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+
+      const data = await response.json();
+      if (data.status === "success" && Array.isArray(data.gameProducts)) {
+        setGameProduct(data.gameProducts);
+        setError(null);
+      } else {
+        throw new Error("No game products found or API response is incorrect.");
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchGameProduct();
+  }, []);
+
   return (
-    <div className="container mx-auto pt-24 pb-12 px-4 text-center bg-black-theme">
-      <motion.h2
-        className="text-3xl sm:text-4xl font-extrabold text-theme mb-8"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        เติมเกมทั้งหมด 🎮
-      </motion.h2>
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-900 via-black to-gray-900 text-white">
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-md"></div>
 
-      <div className="max-w-[1000px] mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-        {games.map((game, index) => (
-          <motion.div
-            key={game.id}
-            className="relative bg-white rounded-lg p-3 text-center shadow-md border border-blue-300 hover:shadow-xl hover:scale-105 transition-all duration-300"
-            onClick={() => handleGameClick(game)}
-            onMouseEnter={() => setHoveredGame(game.id)}
-            onMouseLeave={() => setHoveredGame(null)}
-            whileHover={{ scale: 1.08 }} // ขยายขณะ Hover
-            animate={{
-              y: hoveredGame === game.id ? -5 : [0, -3, 0], // สั่นไหวเบาๆ
-              transition: { duration: 2, repeat: Infinity, repeatType: "reverse" },
-            }}
-          >
-            <div
-              className={`absolute inset-0 bg-gradient-to-b from-transparent via-transparent 
-              to-blue-600 opacity-0 transition-opacity duration-300 ${
-                hoveredGame === game.id ? "opacity-40" : ""
-              }`}
-            />
+      <div className="relative container mx-auto pt-24 pb-12 px-4 text-center">
+        <h2 className="text-4xl sm:text-5xl font-extrabold text-blue-400 drop-shadow-lg mb-8">
+          🎮 เติมเกมทั้งหมด
+        </h2>
 
-            <motion.img
-              src={game.img}
-              alt={game.name}
-              className="w-full aspect-square mx-auto rounded-md mb-2 shadow-lg border border-blue-300 bg-gray-800 p-1 transition-all duration-300"
-              onError={(e) => (e.target.src = "https://via.placeholder.com/100?text=No+Image")}
-              animate={{
-                scale: hoveredGame === game.id ? 1.12 : [1, 1.02, 1], // ส่องแสงตลอดเวลา
-                rotate: hoveredGame === game.id ? 3 : [0, 1, -1, 0], // หมุนเล็กน้อยตลอดเวลา
-                transition: { duration: 2, repeat: Infinity, repeatType: "mirror" },
-              }}
-            />
+        {loading ? (
+          <p className="text-white text-lg animate-pulse">⏳ กำลังโหลดข้อมูลเกม...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <div className="max-w-[1200px] mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+            {gameProduct.map((game) => (
+              <div
+                key={game.name}
+                className="relative bg-white/10 backdrop-blur-lg border border-gray-600 rounded-lg p-4 text-center shadow-lg transform hover:scale-105 transition-all duration-300 cursor-pointer overflow-hidden"
+                onClick={() => navigate("/item-topup", { state: { item: game } })}
+              >
+                {/* Light Reflection Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900 opacity-50 hover:opacity-10 transition-opacity duration-300"></div>
 
-            <p
-              className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                hoveredGame === game.id ? "text-blue-400" : "text-blue-900"
-              }`}
-            >
-              {game.name}
-            </p>
-          </motion.div>
-        ))}
+                {/* Game Image */}
+                <img
+                  src={game.img}
+                  alt={game.name}
+                  className="w-full h-36 object-contain mx-auto rounded-md mb-2 shadow-md border border-gray-500 bg-gray-900 p-2 transition-all duration-300"
+                />
+
+                {/* Game Title */}
+                <p className="text-lg font-semibold text-blue-300 drop-shadow-md">{game.name}</p>
+
+                {/* Hover Glow Effect */}
+                <div className="absolute inset-0 bg-blue-400 opacity-0 hover:opacity-20 transition-opacity duration-300 rounded-lg shadow-lg"></div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
