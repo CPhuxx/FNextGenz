@@ -9,23 +9,20 @@ const PremiumAppsPage = () => {
   const [selectedApp, setSelectedApp] = useState(null);
   const [user, setUser] = useState(null);
   const [credit, setCredit] = useState(0);
-  const [premiumApps, setPremiumApps] = useState([]); // ✅ ดึงสินค้าจาก API
+  const [premiumApps, setPremiumApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [buying, setBuying] = useState(false); // ✅ สถานะกำลังซื้อสินค้า
+  const [buying, setBuying] = useState(false);
 
   useEffect(() => {
     try {
       const storedUser = JSON.parse(localStorage.getItem("user"));
-      if (storedUser) {
-        setUser(storedUser);
-      }
+      if (storedUser) setUser(storedUser);
     } catch (err) {
       console.error("❌ Error loading user data:", err);
     }
   }, []);
 
-  // ✅ ฟังก์ชันดึงเครดิตจาก ByShop API
   const fetchUserCredit = async () => {
     try {
       const response = await fetch("http://localhost:4000/api/money", {
@@ -39,7 +36,7 @@ const PremiumAppsPage = () => {
 
       const data = await response.json();
       if (data.status === "success") {
-        setCredit(parseFloat(data.money)); // ✅ ใช้เครดิตจริงจาก ByShop
+        setCredit(parseFloat(data.money));
       } else {
         throw new Error("❌ ไม่พบข้อมูลเครดิต");
       }
@@ -52,7 +49,6 @@ const PremiumAppsPage = () => {
     fetchUserCredit();
   }, []);
 
-  // ✅ ฟังก์ชันดึงสินค้าจาก API
   const fetchProducts = async () => {
     setLoading(true);
     try {
@@ -66,7 +62,6 @@ const PremiumAppsPage = () => {
       }
 
       const data = await response.json();
-
       if (data.status === "success" && Array.isArray(data.products)) {
         setPremiumApps(data.products);
         setError(null);
@@ -84,34 +79,30 @@ const PremiumAppsPage = () => {
     fetchProducts();
   }, []);
 
-  // ✅ ฟังก์ชันสั่งซื้อสินค้า
   const handlePurchase = async (app) => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    const username = storedUser?.username || "puridet009"; // ✅ ใช้ username ที่ถูกต้อง
+    const username_customer = storedUser?.username || "puridet009"; // ✅ ใช้ username_customer ตาม ByShop
 
-    if (!username) {
-      alert("❌ ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบใหม่");
+    if (!username_customer) {
+      alert("❌ กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อ");
       navigate("/login");
       return;
     }
 
-    // ✅ อัปเดตเครดิตล่าสุดก่อนซื้อ
     await fetchUserCredit();
-
     if (credit < app.price) {
       alert("❌ เครดิตไม่เพียงพอ กรุณาเติมเงินก่อน");
       return;
     }
 
-    setBuying(true); // ✅ ตั้งค่าสถานะกำลังซื้อ
-
+    setBuying(true);
     try {
       const response = await fetch("http://localhost:4000/api/buy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: app.id,
-          username, // ✅ ใช้ username ที่ถูกต้อง
+          id: app.id, // ✅ ระบุ ID ของสินค้า
+          username_customer, // ✅ ใช้ username_customer ตามที่ ByShop ต้องการ
         }),
       });
 
@@ -120,14 +111,9 @@ const PremiumAppsPage = () => {
       }
 
       const data = await response.json();
-
       if (data.status === "success") {
-        // ✅ อัปเดตเครดิตของผู้ใช้จาก ByShop ทันที
         await fetchUserCredit();
-
         alert(`✅ สั่งซื้อสำเร็จ! Order ID: ${data.orderid}`);
-
-        // ✅ นำผู้ใช้ไปยังหน้าประวัติการสั่งซื้อ
         navigate("/order-history", {
           state: { product: app, orderid: data.orderid, email: data.info },
         });
@@ -145,7 +131,7 @@ const PremiumAppsPage = () => {
     <div className="flex flex-col min-h-screen bg-black-theme text-theme">
       <Navbar />
       <main className="flex-grow container mx-auto py-20 px-4 text-center max-w-[1200px]">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8 animate-fadeInUp">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8">
           🎬 แอพพรีเมี่ยมยอดนิยม
         </h2>
 
@@ -156,7 +142,7 @@ const PremiumAppsPage = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
             {premiumApps.map((app) => (
-              <div key={app.id} className="bg-gray-800 rounded-lg p-3 shadow-lg transition hover:scale-105 hover:bg-gray-700">
+              <div key={app.id} className="bg-gray-800 rounded-lg p-3 shadow-lg">
                 <img
                   src={app.img || "https://via.placeholder.com/150"}
                   alt={app.name}
@@ -165,11 +151,13 @@ const PremiumAppsPage = () => {
                 <h3 className="text-md font-semibold text-white">{app.name}</h3>
                 <p className="text-gray-400 text-sm mb-3">{app.price} บาท</p>
                 <div className="flex flex-col gap-2">
-                  <button className="btn btn-buy" onClick={() => setSelectedApp(app)}>รายละเอียด</button>
+                  <button className="btn btn-buy" onClick={() => setSelectedApp(app)}>
+                    รายละเอียด
+                  </button>
                   <button
                     className="btn btn-order"
                     onClick={() => handlePurchase(app)}
-                    disabled={buying} // ✅ ปิดปุ่มระหว่างกำลังซื้อ
+                    disabled={buying}
                   >
                     {buying ? "⏳ กำลังซื้อ..." : "🛒 สั่งซื้อสินค้า"}
                   </button>
