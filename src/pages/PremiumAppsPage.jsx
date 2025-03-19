@@ -13,6 +13,9 @@ const PremiumAppsPage = () => {
   const [error, setError] = useState(null);
   const [buying, setBuying] = useState(false);
   const [customPrices, setCustomPrices] = useState({});
+  const [editingPrice, setEditingPrice] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedApp, setSelectedApp] = useState(null);
 
   useEffect(() => {
     try {
@@ -42,7 +45,8 @@ const PremiumAppsPage = () => {
         throw new Error("❌ ไม่พบข้อมูลเครดิต");
       }
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
+      alert(`เกิดข้อผิดพลาด: ${error.message}`);
     }
   };
 
@@ -63,7 +67,6 @@ const PremiumAppsPage = () => {
       const data = await response.json();
       if (data.status === "success" && Array.isArray(data.products)) {
         setPremiumApps(data.products);
-        // ตั้งค่า default price จาก API
         const priceMap = {};
         data.products.forEach((app) => (priceMap[app.id] = app.price));
         setCustomPrices(priceMap);
@@ -85,6 +88,42 @@ const PremiumAppsPage = () => {
   const handlePriceChange = (id, newPrice) => {
     if (isNaN(newPrice) || newPrice < 0) return;
     setCustomPrices((prevPrices) => ({ ...prevPrices, [id]: newPrice }));
+  };
+
+  const handleEditPrice = (appId) => {
+    setEditingPrice(appId);
+  };
+
+  const handleSavePrice = async (appId) => {
+    const newPrice = customPrices[appId];
+    
+    try {
+      const response = await fetch("http://localhost:4000/api/update-price", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appId: appId,
+          price: newPrice,
+        }),
+      });
+
+      if (!response.ok) throw new Error("❌ การอัพเดตราคาไม่สำเร็จ");
+
+      const data = await response.json();
+      if (data.status === "success") {
+        setEditingPrice(null); // ปิดการแก้ไข
+        alert("✅ อัพเดตราคาสำเร็จ");
+        fetchProducts(); // รีเฟรชข้อมูลสินค้า
+      } else {
+        throw new Error(data.message || "❌ การอัพเดตไม่สำเร็จ");
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingPrice(null); // Close the edit input without saving
   };
 
   const handlePurchase = async (app) => {
@@ -114,7 +153,9 @@ const PremiumAppsPage = () => {
         }),
       });
 
-      if (!response.ok) throw new Error(`เกิดข้อผิดพลาด: ${response.statusText} (${response.status})`);
+      if (!response.ok) {
+        throw new Error(`❌ การสั่งซื้อไม่สำเร็จ: ${response.statusText}`);
+      }
 
       const data = await response.json();
       if (data.status === "success") {
@@ -124,13 +165,23 @@ const PremiumAppsPage = () => {
           state: { product: app, orderid: data.orderid, email: data.info },
         });
       } else {
-        alert("❌ การสั่งซื้อไม่สำเร็จ: " + data.message);
+        alert(`❌ การสั่งซื้อไม่สำเร็จ: ${data.message}`);
       }
     } catch (error) {
-      alert("❌ ไม่สามารถเชื่อมต่อ API ได้ กรุณาลองใหม่");
+      alert(`❌ เกิดข้อผิดพลาด: ${error.message}`);
     } finally {
       setBuying(false);
     }
+  };
+
+  const openPopup = (app) => {
+    setSelectedApp(app);
+    setShowPopup(true);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+    setSelectedApp(null);
   };
 
   return (
@@ -154,23 +205,62 @@ const PremiumAppsPage = () => {
                 />
                 <h3 className="text-md font-semibold text-white">{app.name}</h3>
 
-                {/* ✅ ปรับปรุง Input สำหรับราคาที่กำหนดเอง */}
+                {/* ✅ แสดงราคาหากไม่มีการแก้ไข */}
                 <div className="flex items-center gap-2 mt-2">
                   <input
                     type="number"
-                    value={customPrices[app.id] || app.price}
+                    value={customPrices[app.id] !== undefined ? customPrices[app.id] : app.price}
                     onChange={(e) => handlePriceChange(app.id, parseFloat(e.target.value))}
                     className="w-20 p-1 rounded-md text-black"
                     min="0"
+                    disabled={editingPrice !== app.id}
                   />
                   <span className="text-gray-400 text-sm">บาท</span>
                 </div>
 
-                <p className={`text-xs font-semibold ${app.stock > 0 ? "text-green-400" : "text-red-400"}`}>
+                {/* แสดงจำนวนสินค้าคงเหลือ */}
+                <p className="text-sm font-bold text-yellow-400 mt-2">
+                  สินค้าคงเหลือ: <span className="text-lg">{app.stock} ชิ้น</span>
+                </p>
+
+                {/* แสดงสถานะสินค้า */}
+                <p className={`text-xs font-semibold mt-2 ${app.stock > 0 ? "text-green-500" : "text-red-500"}`}>
                   {app.stock > 0 ? "พร้อมจำหน่าย" : "สินค้าหมด"}
                 </p>
+
+                {/* แสดงปุ่มแก้ไขราคาสำหรับ Admin */}
+                {user?.role === "admin" && editingPrice !== app.id && (
+                  <button
+                    className="btn btn-primary mb-2"
+                    onClick={() => handleEditPrice(app.id)}
+                  >
+                    แก้ไขราคา
+                  </button>
+                )}
+
+                {user?.role === "admin" && editingPrice === app.id && (
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      className="btn btn-success"
+                      onClick={() => handleSavePrice(app.id)}
+                    >
+                      ยืนยัน
+                    </button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={handleCancelEdit}
+                    >
+                      ยกเลิก
+                    </button>
+                  </div>
+                )}
+
                 <div className="flex flex-col gap-2 mt-3">
-                  <button className="btn btn-buy" onClick={() => navigate(`/product/${app.id}`)}>
+                  <button 
+                    className={`btn btn-buy ${app.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""}`} 
+                    onClick={() => openPopup(app)}
+                    disabled={app.stock <= 0}
+                  >
                     รายละเอียด
                   </button>
                   <button
@@ -186,6 +276,18 @@ const PremiumAppsPage = () => {
           </div>
         )}
       </main>
+      
+      {showPopup && selectedApp && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <button className="popup-close" onClick={closePopup}>×</button>
+            <h3 className="text-lg font-semibold">{selectedApp.name}</h3>
+            <img src={selectedApp.img || "https://via.placeholder.com/150"} alt={selectedApp.name} className="popup-img" />
+            <p className="popup-details">{selectedApp.description}</p>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import bannerMain from "../assets/img/bannerMain.jpg";
+import imgesize from "../assets/img/imgesize.png";
+
 
 const Banner = ({ backgroundImage }) => {
   const text = "NextGenz เติมเกม ปลอดภัย ";

@@ -10,6 +10,7 @@ const Topup02 = () => {
   const [slipFile, setSlipFile] = useState(null);
   const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [topupStatus, setTopupStatus] = useState(null);  // เพิ่มการจัดการสถานะการเติมเงิน
   const user = JSON.parse(localStorage.getItem("user"));
 
   const fetchBalance = async () => {
@@ -55,14 +56,14 @@ const Topup02 = () => {
       });
 
       if (response.data.status === "success") {
-        alert("เติมเงินสำเร็จ! รอตรวจสอบสลิป...");
+        setTopupStatus("สำเร็จ! รอตรวจสอบสลิป...");
         fetchBalance(); // อัปเดตยอดเงินใหม่
       } else {
-        alert(response.data.message || "เติมเงินไม่สำเร็จ กรุณาลองอีกครั้ง");
+        setTopupStatus(response.data.message || "เติมเงินไม่สำเร็จ กรุณาลองอีกครั้ง");
       }
     } catch (error) {
       console.error("❌ Error processing topup:", error);
-      alert("ไม่สามารถทำรายการได้ในขณะนี้");
+      setTopupStatus("ไม่สามารถทำรายการได้ในขณะนี้");
     } finally {
       setLoading(false);
     }
@@ -86,6 +87,11 @@ const Topup02 = () => {
           <p className="text-xl">💰 ยอดเงินคงเหลือ: 
             {loading ? " กำลังโหลด..." : ` ${balance} บาท`}
           </p>
+        </div>
+
+        {/* แสดงสถานะเติมเงิน */}
+        <div className="text-center mb-6">
+          {topupStatus && <p className="text-xl text-green-400">{topupStatus}</p>}
         </div>
 
         <div className="flex flex-col md:flex-row gap-6 items-start justify-center">
