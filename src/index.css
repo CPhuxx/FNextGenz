@@ -73,84 +73,6 @@
 /* ป๊อปอัป */
 /* ป๊อปอัป */
 .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    animation: fadeIn 0.3s ease-in-out;
-  }
-  
-  .popup-content {
-    background: #1f2937;
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    width: 90%;
-    max-width: 400px;
-    position: relative;
-    animation: slideUp 0.4s ease-in-out;
-  }
-  
-  .popup-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #ef4444;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s ease-in-out;
-  }
-  
-  .popup-close:hover {
-    background: #dc2626;
-  }
-  
-  .popup-img {
-    width: 100px;
-    margin: 10px auto;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
-  }
-  
-  .popup-details {
-    text-align: left;
-    margin: 10px 0;
-    font-size: 14px;
-  }
-  
-  /* ปุ่ม */
-  .btn {
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: bold;
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
-  }
-  
-  .btn-buy { background: #3b82f6; color: white; }
-  .btn-buy:hover { background: #2563eb; transform: scale(1.05); }
-  
-  .btn-order { background: #ef4444; color: white; }
-  .btn-order:hover { background: #dc2626; transform: scale(1.05); }
-  
-
-/* ป๊อปอัพ (popup) */
-.popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -162,11 +84,12 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 .popup-content {
-  background: #1f2937;
-  color: white;
+  background: #ffffff; /* พื้นหลังสีขาว */
+  color: #000000; /* ตัวหนังสือสีดำ */
   padding: 20px;
   border-radius: 12px;
   text-align: center;
@@ -174,6 +97,7 @@
   width: 90%;
   max-width: 400px;
   position: relative;
+  animation: slideUp 0.4s ease-in-out;
 }
 
 .popup-close {
@@ -187,6 +111,8 @@
   width: 30px;
   height: 30px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease-in-out;
 }
 
 .popup-close:hover {
@@ -197,14 +123,66 @@
   width: 100px;
   margin: 10px auto;
   border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .popup-details {
   text-align: left;
   margin: 10px 0;
+  font-size: 14px;
+  color: #000000;
 }
 
+/* ปุ่ม */
+.btn {
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
 
+.btn-buy {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-buy:hover {
+  background: #2563eb;
+  transform: scale(1.05);
+}
+
+.btn-order {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-order:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* อนิเมชัน */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
   /* PremiumAppPages */
 
   /* ✅ Footer */
@@ -951,4 +929,430 @@ footer a:hover {
   color: #888;
   text-align: center;
   padding: 20px;
+}
+
+
+/* PremiumAppsPage IMG*/
+
+
+/* พื้นหลังดาวเคลื่อนไหว */
+.starry-background {
+  background: #000000; /* เปลี่ยนเป็นสีดำ */
+  position: relative;
+  overflow: hidden;
+}
+
+/* สร้างเลเยอร์ดาว */
+.starry-background::before,
+.starry-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* ดาวชั้นแรก (เคลื่อนไหวช้า) */
+.starry-background::before {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="3" fill="white" opacity="0.7"/></svg>')
+    repeat;
+  animation: moveStars 60s linear infinite, twinkle 2.5s ease-in-out infinite;
+}
+
+/* ดาวชั้นที่สอง (เคลื่อนไหวเร็ว) */
+.starry-background::after {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><circle cx="25" cy="25" r="1.5" fill="%23FFFFE0" opacity="0.9"/></svg>')
+    repeat;
+  animation: moveStars 40s linear infinite, twinkle 1.8s ease-in-out infinite;
+}
+
+/* แอนิเมชันสำหรับดาว */
+@keyframes moveStars {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-1000px);
+  }
+}
+
+/* เอฟเฟกต์ระยิบระยับ */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ป๊อปอัพ (popup) */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.popup-content {
+  background: #1f2937; /* พื้นหลังสีเข้ม */
+  color: white; /* ตัวหนังสือสีขาว */
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  animation: slideUp 0.4s ease-in-out;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease-in-out;
+}
+
+.popup-close:hover {
+  background: #dc2626;
+}
+
+.popup-img {
+  width: 100px;
+  margin: 10px auto;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+.popup-details {
+  text-align: left;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+/* ปุ่ม */
+.btn {
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.btn-buy {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-buy:hover {
+  background: #2563eb;
+  transform: scale(1.05);
+}
+
+.btn-order {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-order:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* อนิเมชันสำหรับป๊อปอัป */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* PremiumAppsPage IMG*/
+
+
+/* พื้นหลังอนุภาคเคลื่อนไหว */
+.particle-background {
+  background: #000; /* พื้นหลังสีน้ำเงินเข้ม */
+  position: relative;
+  overflow: hidden;
+}
+
+/* สร้างเลเยอร์อนุภาค */
+.particle-background::before,
+.particle-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* อนุภาคชั้นแรก (เคลื่อนไหวช้า) */
+.particle-background::before {
+  background: transparent;
+  box-shadow: 
+    100px 50px 1px 0.5px rgba(255, 255, 255, 0.5),
+    200px 150px 2px 0.7px rgba(255, 255, 150, 0.6),
+    300px 100px 1px 0.4px rgba(255, 255, 255, 0.5),
+    400px 200px 2px 0.8px rgba(255, 255, 150, 0.7),
+    500px 300px 1px 0.5px rgba(255, 255, 255, 0.6),
+    600px 250px 2px 0.6px rgba(255, 255, 150, 0.5),
+    700px 350px 1px 0.7px rgba(255, 255, 255, 0.6),
+    800px 400px 2px 0.5px rgba(255, 255, 150, 0.7),
+    900px 200px 1px 0.6px rgba(255, 255, 255, 0.5),
+    1000px 300px 2px 0.8px rgba(255, 255, 150, 0.6);
+  animation: moveParticlesSlow 20s linear infinite, twinkle 2s ease-in-out infinite;
+}
+
+/* อนุภาคชั้นที่สอง (เคลื่อนไหวเร็ว) */
+.particle-background::after {
+  background: transparent;
+  box-shadow: 
+    150px 100px 1px 0.4px rgba(255, 255, 255, 0.4),
+    250px 200px 2px 0.6px rgba(255, 255, 150, 0.5),
+    350px 300px 1px 0.5px rgba(255, 255, 255, 0.4),
+    450px 150px 2px 0.7px rgba(255, 255, 150, 0.6),
+    550px 250px 1px 0.4px rgba(255, 255, 255, 0.5),
+    650px 350px 2px 0.6px rgba(255, 255, 150, 0.5),
+    750px 200px 1px 0.5px rgba(255, 255, 255, 0.4),
+    850px 300px 2px 0.7px rgba(255, 255, 150, 0.6),
+    950px 400px 1px 0.4px rgba(255, 255, 255, 0.5),
+    1050px 250px 2px 0.6px rgba(255, 255, 150, 0.5);
+  animation: moveParticlesFast 15s linear infinite, twinkle 1.5s ease-in-out infinite;
+}
+
+/* แอนิเมชันสำหรับอนุภาค */
+@keyframes moveParticlesSlow {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(50px, 50px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes moveParticlesFast {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-50px, -50px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* พื้นหลังดาวเคลื่อนไหว (จากหน้า PremiumAppsPage) */
+.starry-background {
+  background: #000; /* พื้นหลังสีน้ำเงินเข้มเหมือนท้องฟ้ายามค่ำคืน */
+  position: relative;
+  overflow: hidden;
+}
+
+/* สร้างเลเยอร์ดาว */
+.starry-background::before,
+.starry-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* ดาวชั้นแรก (เคลื่อนไหวช้า) */
+.starry-background::before {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.6"/></svg>')
+    repeat;
+  animation: moveStars 50s linear infinite;
+}
+
+/* ดาวชั้นที่สอง (เคลื่อนไหวเร็ว) */
+.starry-background::after {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><circle cx="25" cy="25" r="1" fill="white" opacity="0.8"/></svg>')
+    repeat;
+  animation: moveStars 30s linear infinite;
+}
+
+/* แอนิเมชันสำหรับดาว */
+@keyframes moveStars {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-1000px);
+  }
+}
+
+/* เอฟเฟกต์ระยิบระยับ */
+.starry-background::before {
+  animation: moveStars 50s linear infinite, twinkle 2s ease-in-out infinite;
+}
+
+.starry-background::after {
+  animation: moveStars 30s linear infinite, twinkle 1.5s ease-in-out infinite;
+}
+
+/* ป๊อปอัพ (popup) */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.popup-content {
+  background: #1f2937; /* พื้นหลังสีเข้ม */
+  color: white; /* ตัวหนังสือสีขาว */
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  animation: slideUp 0.4s ease-in-out;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease-in-out;
+}
+
+.popup-close:hover {
+  background: #dc2626;
+}
+
+.popup-img {
+  width: 100px;
+  margin: 10px auto;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+.popup-details {
+  text-align: left;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+/* ปุ่ม */
+.btn {
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.btn-buy {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-buy:hover {
+  background: #2563eb;
+  transform: scale(1.05);
+}
+
+.btn-order {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-order:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* อนิเมชันสำหรับป๊อปอัป */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

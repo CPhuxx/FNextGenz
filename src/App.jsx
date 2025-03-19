@@ -14,6 +14,7 @@ import AdminSettings from "./pages/AdminSettings"; // New Page for Admin Setting
 import AdminManageData from "./pages/AdminManageData"; // New Page for Admin Manage Data
 import AdminAddProductPage from "./pages/AdminAddProductPage"; // Import the new Admin Add Product Page
 
+
 function App() {
   return (
     <Router>
@@ -54,6 +55,9 @@ function App() {
         
         {/* ✅ Catch-all route (if no route matches) */}
         <Route path="*" element={<Navigate to="/home" />} />
+
+        
+
       </Routes>
     </Router>
   );
